@@ -1,6 +1,6 @@
 # Maintainer: Shayne Hartford<shayneehartford@gmail.com>
 
-pkgbase=linux-zen-vfio-aiberia
+pkgbase=linux-zen-gjvnq
 pkgver=5.7.zen1
 pkgrel=1
 pkgdesc='Linux ZEN with VFIO patches and https://clbin.com/VCiYJ patch by u/Aiberia'
@@ -27,7 +27,7 @@ validpgpkeys=(
   '647F28654894E3BD457199BE38DBBDC86092693E'  # Greg Kroah-Hartman
   '8218F88849AAC522E94CF470A5E9288C4FA415FA'  # Jan Alexander Steffens (heftig)
 )
-sha256sums=('01db2a42315527698b76edee1a836af56b805e18c363086aa7cc57db377ad553'
+sha256sums=('6451f1152b738357af27b6088f91c04188656a3ad04b5c005178cded25f0cf1b'
             '0352f4a52166bef96ac5b4ff1d2bcb61efd9580803af57ce0f3019565daa0bc2'
             '130c58ab30968b02087c54c9587683c1c7baebf7eaf6b128ca0789615d225775'
             '8cb21e0b3411327b627a9dd15b8eb773295a0d2782b1a41b2a8839d1b2f5778c')
