@@ -1,9 +1,9 @@
 # Maintainer: Shayne Hartford<shayneehartford@gmail.com>
 
-pkgbase=linux-zen-vfio
-pkgver=5.6.13.zen1
+pkgbase=linux-zen-vfio-aiberia
+pkgver=5.7.zen1
 pkgrel=1
-pkgdesc='Linux ZEN'
+pkgdesc='Linux ZEN with VFIO patches and https://clbin.com/VCiYJ patch by u/Aiberia'
 _srctag=v${pkgver%.*}-${pkgver##*.}
 url="https://github.com/zen-kernel/zen-kernel/commits/$_srctag"
 arch=(x86_64)
@@ -16,10 +16,10 @@ makedepends=(
 options=('!strip')
 _srcname=zen-kernel
 source=(
-  "$_srcname::git+https://github.com/zen-kernel/zen-kernel?signed#tag=$_srctag"
+  #"$_srcname::git+https://github.com/zen-kernel/zen-kernel?signed#tag=$_srctag"
   config         # the main kernel config file
   add-acs-overrides.patch # patch for acs overrides
-  i915-vga-arbiter.patch  # patch for i915 VGA arbiter
+  aiberia.patch           # patch for 'PCI header type 127' error
   sphinx-workaround.patch
 )
 validpgpkeys=(
@@ -27,10 +27,9 @@ validpgpkeys=(
   '647F28654894E3BD457199BE38DBBDC86092693E'  # Greg Kroah-Hartman
   '8218F88849AAC522E94CF470A5E9288C4FA415FA'  # Jan Alexander Steffens (heftig)
 )
-sha256sums=('SKIP'
-            '01db2a42315527698b76edee1a836af56b805e18c363086aa7cc57db377ad553'
+sha256sums=('01db2a42315527698b76edee1a836af56b805e18c363086aa7cc57db377ad553'
             '0352f4a52166bef96ac5b4ff1d2bcb61efd9580803af57ce0f3019565daa0bc2'
-            '094a29902b52cec2f0840219225a1458ca925f875524ecb7827da62a33c74ccf'
+            '130c58ab30968b02087c54c9587683c1c7baebf7eaf6b128ca0789615d225775'
             '8cb21e0b3411327b627a9dd15b8eb773295a0d2782b1a41b2a8839d1b2f5778c')
 
 export KBUILD_BUILD_HOST=archlinux
@@ -38,9 +37,15 @@ export KBUILD_BUILD_USER=$pkgbase
 export KBUILD_BUILD_TIMESTAMP="$(date -Ru${SOURCE_DATE_EPOCH:+d @$SOURCE_DATE_EPOCH})"
 
 prepare() {
+  if [ ! -d $_srcname ]; then
+    echo "Downloading zen kernel..."
+    git clone --depth=1 --branch=$_srctag "https://github.com/zen-kernel/zen-kernel" $_srcname
+  fi
+
   cd $_srcname
 
   echo "Setting version..."
+  git reset --hard
   scripts/setlocalversion --save-scmversion
   echo "-$pkgrel" > localversion.10-pkgrel
   echo "${pkgbase#linux}" > localversion.20-pkgname
