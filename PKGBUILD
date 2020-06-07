@@ -2,7 +2,7 @@
 
 pkgbase=linux-zen-gjvnq
 pkgver=5.7.zen1
-pkgrel=1
+pkgrel=2
 pkgdesc='Linux ZEN with VFIO patches and https://clbin.com/VCiYJ patch by u/Aiberia'
 _srctag=v${pkgver%.*}-${pkgver##*.}
 url="https://github.com/zen-kernel/zen-kernel/commits/$_srctag"
@@ -26,6 +26,7 @@ validpgpkeys=(
   'ABAF11C65A2970B130ABE3C479BE3E4300411886'  # Linus Torvalds
   '647F28654894E3BD457199BE38DBBDC86092693E'  # Greg Kroah-Hartman
   '8218F88849AAC522E94CF470A5E9288C4FA415FA'  # Jan Alexander Steffens (heftig)
+  'FEDB7014D7D90ADE3B74B54B96E477D4BFC6B8D9'  # gabrieljvnq@gmail.com
 )
 sha256sums=('6451f1152b738357af27b6088f91c04188656a3ad04b5c005178cded25f0cf1b'
             '0352f4a52166bef96ac5b4ff1d2bcb61efd9580803af57ce0f3019565daa0bc2'
@@ -45,7 +46,7 @@ prepare() {
   cd $_srcname
 
   echo "Setting version..."
-  git reset --hard
+  git reset --hard $_srctag
   scripts/setlocalversion --save-scmversion
   echo "-$pkgrel" > localversion.10-pkgrel
   echo "${pkgbase#linux}" > localversion.20-pkgname
