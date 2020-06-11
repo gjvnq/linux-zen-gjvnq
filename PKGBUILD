@@ -2,7 +2,7 @@
 
 pkgbase=linux-zen-gjvnq
 pkgver=5.7.zen1
-pkgrel=4
+pkgrel=5
 pkgdesc='Linux ZEN with VFIO patches and https://clbin.com/VCiYJ patch by u/Aiberia (Compiled for AMD ZEN 2)'
 _srctag=v${pkgver%.*}-${pkgver##*.}
 url="https://github.com/zen-kernel/zen-kernel/commits/$_srctag"
@@ -28,7 +28,7 @@ validpgpkeys=(
   '8218F88849AAC522E94CF470A5E9288C4FA415FA'  # Jan Alexander Steffens (heftig)
   'FEDB7014D7D90ADE3B74B54B96E477D4BFC6B8D9'  # gabrieljvnq@gmail.com
 )
-sha256sums=('f3b15d0c6917d372cb62eb4442c5028348eadbb1a327079b96071eced8472a0c'
+sha256sums=('a37ac62032d747900924f072e3664946b8ac1ee590e8640bf413f51314eb43c7'
             '0352f4a52166bef96ac5b4ff1d2bcb61efd9580803af57ce0f3019565daa0bc2'
             '130c58ab30968b02087c54c9587683c1c7baebf7eaf6b128ca0789615d225775'
             '8cb21e0b3411327b627a9dd15b8eb773295a0d2782b1a41b2a8839d1b2f5778c')
@@ -195,7 +195,7 @@ _package-docs() {
   ln -sr "$builddir/Documentation" "$pkgdir/usr/share/doc/$pkgbase"
 }
 
-pkgname=("$pkgbase" "$pkgbase-headers" "$pkgbase-docs")
+pkgname=("$pkgbase" "$pkgbase-headers")
 for _p in "${pkgname[@]}"; do
   eval "package_$_p() {
     $(declare -f "_package${_p#$pkgbase}")
