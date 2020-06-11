@@ -1,3 +1,6 @@
+x509.genkey
+signing_key.pem
+
 *
 !*.patch
 !.gitignore

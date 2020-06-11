@@ -28,7 +28,7 @@ validpgpkeys=(
   '8218F88849AAC522E94CF470A5E9288C4FA415FA'  # Jan Alexander Steffens (heftig)
   'FEDB7014D7D90ADE3B74B54B96E477D4BFC6B8D9'  # gabrieljvnq@gmail.com
 )
-sha256sums=('a37ac62032d747900924f072e3664946b8ac1ee590e8640bf413f51314eb43c7'
+sha256sums=('799b287a14681266a9fbda85e12eaa776770a0fdf69301e5c27378e4336e28d4'
             '0352f4a52166bef96ac5b4ff1d2bcb61efd9580803af57ce0f3019565daa0bc2'
             '130c58ab30968b02087c54c9587683c1c7baebf7eaf6b128ca0789615d225775'
             '8cb21e0b3411327b627a9dd15b8eb773295a0d2782b1a41b2a8839d1b2f5778c')
@@ -37,15 +37,38 @@ export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase
 export KBUILD_BUILD_TIMESTAMP="$(date -Ru${SOURCE_DATE_EPOCH:+d @$SOURCE_DATE_EPOCH})"
 
+# Uncomment line below if your signing_key.pem is password encrypted
+#export KBUILD_SIGN_PIN=1234
+
 prepare() {
+  NC='\033[0m'
+  Blue='\033[0;34m'
+  Bold='\033[1m'
+  MSG_HEAD="$NC$Blue  -> $NC$Bold"
+
   if [ ! -d $_srcname ]; then
-    echo "Downloading zen kernel..."
+    echo -e $MSG_HEAD"Downloading zen kernel..."$NC
     git clone --depth=1 --branch=$_srctag "https://github.com/zen-kernel/zen-kernel" $_srcname
+  fi
+
+  echo "$_srcname/certs/signing_key.pem";
+  if [ -f "../signing_key.pem" ]; then
+    echo -e $MSG_HEAD"Found signing_key.pem"$NC
+    echo "Using signing_key.pem for module signing"
+    cp ../signing_key.pem $_srcname/certs/signing_key.pem
+  elif [ -f "../x509.genkey" ]; then
+    echo -e $MSG_HEAD"Found x509.genkey"$NC
+    echo "Using x509.genkey to generate a key for module signing"
+    cp ../x509.genkey $_srcname/certs/x509.genkey
+  else
+    echo -e $MSG_HEAD"Found neither signing_key.pem nor x509.genkey"$NC
+    echo "Will auto generate module singing key with default config"
+    echo "Consider setting placing either signing_key.pem or x509.genkey in the repository root dir"
   fi
 
   cd $_srcname
 
-  echo "Setting version..."
+  echo -e $MSG_HEAD"Setting version..."$NC
   git reset --hard $_srctag
   scripts/setlocalversion --save-scmversion
   echo "-$pkgrel" > localversion.10-pkgrel
@@ -56,16 +79,16 @@ prepare() {
     src="${src%%::*}"
     src="${src##*/}"
     [[ $src = *.patch ]] || continue
-    echo "Applying patch $src..."
+    echo -e $MSG_HEAD"Applying patch $src..."$NC
     patch -Np1 < "../$src"
   done
 
-  echo "Setting config..."
+  echo -e $MSG_HEAD"Setting config..."$NC
   cp ../config .config
   make olddefconfig
 
   make -s kernelrelease > version
-  echo "Prepared $pkgbase version $(<version)"
+  echo -e $MSG_HEAD"Prepared $pkgbase version $(<version)"$NC
 }
 
 build() {
