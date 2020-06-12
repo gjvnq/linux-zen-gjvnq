@@ -51,19 +51,18 @@ prepare() {
     git clone --depth=1 --branch=$_srctag "https://github.com/zen-kernel/zen-kernel" $_srcname
   fi
 
-  echo "$_srcname/certs/signing_key.pem";
   if [ -f "../signing_key.pem" ]; then
     echo -e $MSG_HEAD"Found signing_key.pem"$NC
-    echo "Using signing_key.pem for module signing"
+    echo "Using $(pwd)/../signing_key.pem for module signing"
     cp ../signing_key.pem $_srcname/certs/signing_key.pem
   elif [ -f "../x509.genkey" ]; then
     echo -e $MSG_HEAD"Found x509.genkey"$NC
-    echo "Using x509.genkey to generate a key for module signing"
+    echo "Using $(pwd)/../x509.genkey to generate a key for module signing"
     cp ../x509.genkey $_srcname/certs/x509.genkey
   else
     echo -e $MSG_HEAD"Found neither signing_key.pem nor x509.genkey"$NC
     echo "Will auto generate module singing key with default config"
-    echo "Consider setting placing either signing_key.pem or x509.genkey in the repository root dir"
+    echo "Consider setting placing either signing_key.pem or x509.genkey on: $(pwd)/../"
   fi
 
   cd $_srcname
